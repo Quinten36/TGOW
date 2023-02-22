@@ -2,6 +2,10 @@ package com.example.week3java.modal;
 
 import com.example.week3java.controller.GameController;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class HulpFunc {
     private GameLogica rules;
 
@@ -57,5 +61,53 @@ public class HulpFunc {
         } else {
             return false;
         }
+    }
+
+    public boolean kijkenOfHetSpelOverIs(int spelerOmTeChecken) {
+        ArrayList<Coordinaat> alleVakjeVanSpeler = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (GameController.gameRules.speelBord.getWaarde(new Coordinaat(i,j)) == spelerOmTeChecken)
+                    alleVakjeVanSpeler.add(new Coordinaat(i,j));
+            }
+        }
+        for (Coordinaat c : alleVakjeVanSpeler) {
+            //verdubbelen N,E,Z,W FIXED
+            if (magDeDuplicatieVoorkomen(c.x, c.y, c.x, c.y-1)||magDeDuplicatieVoorkomen(c.x, c.y, c.x+1, c.y)||
+                    magDeDuplicatieVoorkomen(c.x, c.y, c.x, c.y+1)||magDeDuplicatieVoorkomen(c.x, c.y, c.x-1, c.y))
+                return false;
+            //verdubbel NE,ZE,ZW,NW FIXED
+            if (magDeDuplicatieVoorkomen(c.x, c.y, c.x+1, c.y-1)||magDeDuplicatieVoorkomen(c.x, c.y, c.x+1, c.y+1)||
+                    magDeDuplicatieVoorkomen(c.x, c.y, c.x-1, c.y+1)||magDeDuplicatieVoorkomen(c.x, c.y, c.x-1, c.y-1))
+                return false;
+            //springen N,E,Z,W FIXED
+            if (magDeVerplaatsingVoorkomen(c.x, c.y, c.x, c.y-2)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x+2, c.y)||
+                    magDeVerplaatsingVoorkomen(c.x, c.y, c.x, c.y+2)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x-2, c.y))
+                return false;
+            //springen NE,ZE,ZW,NW FIXED
+            if (magDeVerplaatsingVoorkomen(c.x, c.y, c.x+2, c.y-2)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x+2, c.y+2)||
+                    magDeVerplaatsingVoorkomen(c.x, c.y, c.x-2, c.y-2)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x-2, c.y-2))
+                return false;
+            //springen NNE,ENE,EZE,ZZE,ZZW,WZW,WNW,NNW
+            if (magDeVerplaatsingVoorkomen(c.x, c.y, c.x+1, c.y-2)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x+2, c.y-1)||
+                    magDeVerplaatsingVoorkomen(c.x, c.y, c.x+2, c.y+1)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x+1, c.y+2)||
+                    magDeVerplaatsingVoorkomen(c.x, c.y, c.x-1, c.y+2)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x-2, c.y+1)||
+                    magDeVerplaatsingVoorkomen(c.x, c.y, c.x-2, c.y-1)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x-1, c.y-2))
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * dit is een hulpmethode om een diepe clone te maken van een array
+     * @param original de orginele array
+     * @return de gekopierde array
+     */
+    public static int[][] diepeCopy(int[][] original) {
+        int[][] clone = new int[original.length][];
+        for (int i = 0; i < original.length; i++) {
+            clone[i] = Arrays.copyOf(original[i], original[i].length);
+        }
+        return clone;
     }
 }

@@ -52,11 +52,17 @@ public class CustomPane extends Pane implements VeldUpdater {
         return kleur;
     }
 
+    /**
+     * Update de tekst in een vakje
+     */
     private void updateDeTekst() {
         this.waarde = GameController.gameRules.speelBord.getWaarde(coor);
         this.waardeText.setText(this.waarde == 0 ? "" : ""+(char) this.waarde);
     }
 
+    /**
+     * update de kleur van een vakje
+     */
     private void updateDeKleur() {
         this.kleurAchtergrond.setFill(bepaalKleur());
     }
@@ -69,6 +75,10 @@ public class CustomPane extends Pane implements VeldUpdater {
         return this.vak;
     }
 
+    /**
+     * De methode die wordt aangeroepen om alle observers een update te geven
+     * @param pane de pane die geupdate moet worden qua highlight
+     */
     @Override
     public void update(CustomPane pane) {
         if (pane.geselecteerd) {

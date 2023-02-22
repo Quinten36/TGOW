@@ -24,8 +24,7 @@ public class Booord {
 
     /**
      * geeft de waarde terug van het vakje
-     * @param x de x coordinaat van het vakje
-     * @param y de y coordinaat van het vakje
+     * @param coor de x en y coordinaat van het vakje
      * @return de waarde die het vakje heeft
      */
     public int getWaarde(Coordinaat coor) {
@@ -34,8 +33,7 @@ public class Booord {
 
     /**
      * update de waarde van een specifiek vakje
-     * @param x de x coordinaat van het vakje
-     * @param y de y coordinaat van het vakje
+     * @param coor de x and y coordinaat van het vakje
      * @param waarde de waarde die in het vakje moet komen te staan
      */
     public void setWaarde(Coordinaat coor, int waarde) {
@@ -44,8 +42,7 @@ public class Booord {
 
     /**
      * Kijkt of de waarde die hij meekrijg overeen komt met de waarde op een specifiek vakje
-     * @param x de x coordinaat van het vakje
-     * @param y de y coordinaat van het vakje
+     * @param coor de x en y coordinaat van het vakje
      * @param waarde de waarde waarmee hij het moet vergelijken
      * @return retourneert de waar of niet waar als de waarde overeenkomt met de waarde van het vakje
      */

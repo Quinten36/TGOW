@@ -11,21 +11,26 @@ public class Stapel {
 
     public void legNeer(Object item) {
         stapelItem ding = new stapelItem(item);
-        if (onderste == null) {
-            onderste = ding;
-            bovenste = ding;
+        if (this.onderste == null) {
+            this.onderste = ding;
+            this.bovenste = ding;
         } else {
-            var ouderBovenste = bovenste;
-            ding.vorige = ouderBovenste;
+            var onderBovenste = bovenste;
+            ding.vorige = onderBovenste;
             bovenste = ding;
-            ouderBovenste.volgende = ding;
+            onderBovenste.volgende = ding;
         }
     }
 
     public stapelItem pakBovensteDing() {
-        if (bovenste == null) return null;
+        if (onderste == null)
+            return null;
         var oudeBovenste = bovenste;
         bovenste = oudeBovenste.vorige;
+        //TODO: kijken of dit goed is en testen
+        if (bovenste == null) {
+            this.bovenste = onderste;
+        }
         return oudeBovenste;
     }
 

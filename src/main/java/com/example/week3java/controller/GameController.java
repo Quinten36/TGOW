@@ -1,9 +1,7 @@
 package com.example.week3java.controller;
 
-import com.example.week3java.modal.BordOberserver;
-import com.example.week3java.modal.Coordinaat;
-import com.example.week3java.modal.CustomPane;
-import com.example.week3java.modal.GameLogica;
+import com.example.week3java.modal.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -35,7 +33,6 @@ public class GameController implements Initializable, BordOberserver {
         gridPane.setVgap(-12);
 
         gameRules = new GameLogica();
-        gameRules.sub(this);
         gameRules.setOriginVelden(2);
 
         int[][] copyBoard = gameRules.getSpeelbord();
@@ -70,13 +67,22 @@ public class GameController implements Initializable, BordOberserver {
     }
 
     @Override
-    public void update(int x, int y, int waarde) {
-//        int field = (x+1)*(y+1);
-//        gameBord.getChildren().get(field);
-    }
-
-    @Override
     public void geefFeedback(String feedbackw) {
         feedback.setText(feedbackw);
+    }
+
+    @FXML
+    void GaBoordenTerug(ActionEvent event) {
+        if (gameRules.spelerAanZet == 0) { //alleen als de speler aan de beurt is mag hij cheaten
+            int[][] oud = (int[][]) gameRules.serviesKast.pakBovensteDing().krijgWaarde();
+            int[][] oud2 = (int[][]) gameRules.serviesKast.pakBovensteDing().krijgWaarde();
+            int[][] oud3 = (int[][]) gameRules.serviesKast.pakBovensteDing().krijgWaarde();
+//            Booord teHerstellenBord = (Booord) gameRules.serviesKast.pakBovensteDing().krijgWaarde();
+            for (int i = 0; i< 7;i++) {
+                for (int j = 0; j < 7;j++) {
+                    gameRules.speelBord.setWaarde(new Coordinaat(j,i), oud3[j][i]);
+                }
+            }
+        }
     }
 }
