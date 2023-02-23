@@ -48,7 +48,7 @@ public class GameController implements Initializable, BordOberserver {
                 final int hoeveelste = gridPane.getChildren().size();
                 vakje.getPane().setOnMouseClicked((MouseEvent event) -> {
                     try {
-                        gameRules.doeZet(kolom, rij, hoeveelste);
+                        gameRules.doeZet(new Coordinaat(kolom, rij), hoeveelste);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

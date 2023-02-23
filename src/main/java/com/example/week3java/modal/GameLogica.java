@@ -21,9 +21,7 @@ public class GameLogica {
     public boolean gameIsGaande = false;
 
     private Label feedbackText;
-
-    //TODO: overal waar parameter coordianten zijn + waarde misschien een class maken of in de coordinaat gooien
-
+    
     public GameLogica() {
         this.speelBord = new Booord();
         this.hulp = new HulpFunc(this);
@@ -51,25 +49,24 @@ public class GameLogica {
 
     /**
      * kijkt eerst of het spel gaande is, en handeld daarna de input/zetten af die de speler kan doen
-     * @param x de x coordinaat van het beginvakje waarvan hij een zet gaat doen
-     * @param y de y coordinaat van het beginvakje waarvan hij een zet gaat doen
+     * @param coor de x en y coordinaat van het beginvakje waarvan hij een zet gaat doen
      * @param hoeveelste het hoeveelste vakje van de vakjes array het is
      * @throws Exception als hij wonky doet
      */
-    public void doeZet(int x, int y, int hoeveelste) throws Exception {
+    public void doeZet(Coordinaat coor, int hoeveelste) throws Exception {
         if (gameIsGaande) {
-            boolean isZetValidVoorBegin = speelBord.checkWaarde(new Coordinaat(x,y), spelersInSpel[spelerAanZet]);
+            boolean isZetValidVoorBegin = speelBord.checkWaarde(coor, spelersInSpel[spelerAanZet]);
 
             if (isZetValidVoorBegin) {
-                startPositie = new Coordinaat(x, y);
+                startPositie = coor;
                 regelDeHighlight(hoeveelste);
                 feedbackText.setText("Speler "+(char) spelersInSpel[spelerAanZet]+" kan nu zijn tweede move doen");
             } else {
-                boolean isZetValidVoorMove = speelBord.checkWaarde(new Coordinaat(x,y), 0);
+                boolean isZetValidVoorMove = speelBord.checkWaarde(coor, 0);
                 boolean o = false;
                 if (isZetValidVoorMove && startPositie != null) {
-                    o |= verdubbelen(x, y);
-                    o |= verplaats(x, y);
+                    o = verdubbelen(coor);
+                    o |= verplaats(coor);
                 } else {
                     feedbackText.setText("Speler "+(char) spelersInSpel[spelerAanZet]+" moet een eerst een zet doen op je eigen vakje");
                 }
@@ -83,17 +80,16 @@ public class GameLogica {
 
     /**
      * kijkt of je mag springen naar het vakje wat je meegeef. Infecteert daarna en update dan alle velden voor de nieuwe text en kleur
-     * @param x de x coordinaat van het bestemmings vakje
-     * @param y de y coordinaat van het bestemmings vakje
+     * @param coor de x en y coordinaat van het bestemmings vakje
      * @return geeft terug of het wel op niet is gelukt
      */
-    private boolean verplaats(int x, int y) throws Exception {
+    private boolean verplaats(Coordinaat coor) throws Exception {
         boolean output = false;
-        if(hulp.magDeVerplaatsingVoorkomen(startPositie.x, startPositie.y, x, y)){
-            speelBord.setWaarde(new Coordinaat(x,y), (int) spelersInSpel[spelerAanZet]);
+        if(hulp.magDeVerplaatsingVoorkomen(startPositie.x, startPositie.y, coor.x, coor.y)){
+            speelBord.setWaarde(coor, (int) spelersInSpel[spelerAanZet]);
             speelBord.setWaarde(startPositie, 0);
 
-            infecteer(x,y);
+            infecteer(coor);
             output = true;
         }
         updateAlleVelden();
@@ -102,15 +98,14 @@ public class GameLogica {
 
     /**
      * kijkt of je mag verdubbelen naar het vakje wat je meegeef. Infecteert daarna en update dan alle velden voor de nieuwe text en kleur
-     * @param x de x coordinaat van het bestemmings vakje
-     * @param y de y coordinaat van het bestemmings vakje
+     * @param coor de x en y coordinaat van het bestemmings vakje
      * @return geeft terug of het wel op niet is gelukt
      */
-    public boolean verdubbelen(int x, int y){
+    public boolean verdubbelen(Coordinaat coor){
         boolean output = false;
-        if(hulp.magDeDuplicatieVoorkomen(startPositie.x, startPositie.y, x, y)){
-            speelBord.setWaarde(new Coordinaat(x,y), (int) spelersInSpel[spelerAanZet]);
-            infecteer(x,y);
+        if(hulp.magDeDuplicatieVoorkomen(startPositie.x, startPositie.y, coor.x, coor.y)){
+            speelBord.setWaarde(coor, (int) spelersInSpel[spelerAanZet]);
+            infecteer(coor);
             output = true;
         }
         updateAlleVelden();
@@ -119,18 +114,18 @@ public class GameLogica {
 
     /**
      * infecteerd de tegenstander die rondom het vakjes lig (straal van 1) met het virus van deze speler
-     * @param x de x coordinaat van de oorsprong vakje
-     * @param y de y coordinaat van de oorsprong vakje
+     * @param coor de x en y coordinaat van de oorsprong vakje
      */
-    private void infecteer(int x, int y){
-        int kleurVanVak = GameController.gameRules.speelBord.getWaarde(new Coordinaat(x,y));
+    private void infecteer(Coordinaat coor){
+        int kleurVanVak = GameController.gameRules.speelBord.getWaarde(coor);
         for (int xj = -1; xj <= 1; xj++) {
             //x is rij
             //y is kolom
             for(int yi = -1; yi<=1;yi++){
                 try {
-                    if (speelBord.getWaarde(new Coordinaat(x+xj, y+yi)) != 0 && speelBord.getWaarde(new Coordinaat(x+xj, y+yi)) != kleurVanVak)
-                        speelBord.setWaarde(new Coordinaat(x+xj, y+yi), kleurVanVak);
+                    Coordinaat tijdelijk = new Coordinaat(coor.x+xj, coor.y+yi);
+                    if (speelBord.getWaarde(tijdelijk) != 0 && speelBord.getWaarde(tijdelijk) != kleurVanVak)
+                        speelBord.setWaarde(tijdelijk, kleurVanVak);
                 } catch (Exception ignored) {
                 }
             }
