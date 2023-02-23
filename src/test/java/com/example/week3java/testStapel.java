@@ -60,4 +60,13 @@ public class testStapel {
         s.pakBovensteDing();
         assertEquals(s.krijgWaardeBovenste(), 16);
     }
+
+    @Test
+    public void CheckOfJeDeStapelKanVullenLegenEnWeerVullen() {
+        Stapel s = new Stapel();
+        s.legNeer(15);
+        s.pakBovensteDing();
+        s.legNeer(18);
+        assertEquals(s.krijgWaardeBovenste(), 18);
+    }
 }

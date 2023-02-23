@@ -18,7 +18,7 @@ public class GameLogica {
     public int spelerAanZet;
     public Coordinaat startPositie = null;
 
-    private boolean gameIsGaande = false;
+    public boolean gameIsGaande = false;
 
     private Label feedbackText;
 
@@ -64,7 +64,6 @@ public class GameLogica {
                 startPositie = new Coordinaat(x, y);
                 regelDeHighlight(hoeveelste);
                 feedbackText.setText("Speler "+(char) spelersInSpel[spelerAanZet]+" kan nu zijn tweede move doen");
-                //TODO: maak een check dat hij hieronder alleen uitvoer als startpositie iets is
             } else {
                 boolean isZetValidVoorMove = speelBord.checkWaarde(new Coordinaat(x,y), 0);
                 boolean o = false;
@@ -78,6 +77,7 @@ public class GameLogica {
                 if (o)
                     geefDeBeurtDoor();
             }
+            updateAlleVelden();
         }
     }
 
@@ -109,12 +109,10 @@ public class GameLogica {
     public boolean verdubbelen(int x, int y){
         boolean output = false;
         if(hulp.magDeDuplicatieVoorkomen(startPositie.x, startPositie.y, x, y)){
-            System.out.println("doe zet");
             speelBord.setWaarde(new Coordinaat(x,y), (int) spelersInSpel[spelerAanZet]);
-            output = true;
             infecteer(x,y);
+            output = true;
         }
-
         updateAlleVelden();
         return output;
     }
@@ -145,25 +143,35 @@ public class GameLogica {
     private void geefDeBeurtDoor() {
         int[][] copy = HulpFunc.diepeCopy(speelBord.getSpeelBooordt());
         serviesKast.legNeer(copy);
-//        System.out.println("Leg op de stapel");
-//        for (int i = 0; i< 7;i++) {
-//            for (int j = 0; j < 7;j++) {
-//                System.out.print(copy[i][j] == 0 ? " " : ""+(char) copy[i][j]);
-//            }
-//            System.out.println();
-//        }
-//        System.out.println("ENDDDD");
+
+        //ga naar de volgende speler om te kijken of hij nog zetten kan doen
+        gaNaarVolgendeSpeler();
+
         if (hulp.kijkenOfHetSpelOverIs(spelersInSpel[spelerAanZet])) {
             gameIsGaande = false;
+            //ga een speler terug omdat die heeft gewonnen
+            gaEenSpelerTerug();
             feedbackText.setText("Speler "+(char) spelersInSpel[spelerAanZet]+" heeft gewonnen. Het spel is afgelopen");
-        } else {
-            if (spelerAanZet == (spelersInSpel.length-1))
-                spelerAanZet = 0;
-            else
-                spelerAanZet++;
-            //TODO: feedback algemene fucntie maken?
+        } else
             feedbackText.setText("Speler "+(char) spelersInSpel[spelerAanZet]+" kan nu een move zetten");
-        }
+    }
+
+    /**
+     * Hierin gaat hij naar de volgende speler
+     */
+    public void gaNaarVolgendeSpeler() {
+        if (spelerAanZet == (spelersInSpel.length-1))
+            spelerAanZet = 0;
+        else
+            spelerAanZet++;
+    }
+
+    /**
+     * Hiermee gaat hij een speler terug
+     */
+    public void gaEenSpelerTerug() {
+        spelerAanZet--;
+        if (spelerAanZet < 0) spelerAanZet = spelersInSpel.length-1;
     }
 
     /**

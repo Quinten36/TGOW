@@ -2,7 +2,6 @@ package com.example.week3java.modal;
 
 import com.example.week3java.controller.GameController;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 

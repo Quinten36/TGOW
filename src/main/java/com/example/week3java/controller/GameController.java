@@ -71,18 +71,20 @@ public class GameController implements Initializable, BordOberserver {
         feedback.setText(feedbackw);
     }
 
+    //gefixed met de debug ogen van de god Sander
     @FXML
     void GaBoordenTerug(ActionEvent event) {
         if (gameRules.spelerAanZet == 0) { //alleen als de speler aan de beurt is mag hij cheaten
-            int[][] oud = (int[][]) gameRules.serviesKast.pakBovensteDing().krijgWaarde();
-            int[][] oud2 = (int[][]) gameRules.serviesKast.pakBovensteDing().krijgWaarde();
-            int[][] oud3 = (int[][]) gameRules.serviesKast.pakBovensteDing().krijgWaarde();
-//            Booord teHerstellenBord = (Booord) gameRules.serviesKast.pakBovensteDing().krijgWaarde();
-            for (int i = 0; i< 7;i++) {
-                for (int j = 0; j < 7;j++) {
+            gameRules.serviesKast.pakBovensteDing(); //pakt huidige stand
+            gameRules.serviesKast.pakBovensteDing(); //pakt de stand zoals hij bij de tegenstand stond
+            int[][] oud3 = (int[][]) gameRules.serviesKast.krijgWaardeBovenste(); //pakt de stand hoe hij stond toen je aan de beurt was
+            for (int i = 0; i< 7;i++)
+                for (int j = 0; j < 7;j++)
                     gameRules.speelBord.setWaarde(new Coordinaat(j,i), oud3[j][i]);
-                }
-            }
+
+            gameRules.gameIsGaande = true;
+
+            gameRules.updateAlleVelden();
         }
     }
 }

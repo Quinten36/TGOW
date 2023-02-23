@@ -23,30 +23,37 @@ public class Booord {
     }
 
     /**
-     * geeft de waarde terug van het vakje
+     * geeft de waarde terug van het vakje mits het binnen het bord ligt
      * @param coor de x en y coordinaat van het vakje
-     * @return de waarde die het vakje heeft
+     * @return de waarde die het vakje heeft. -1 als de coordinaten niet kloppen
      */
     public int getWaarde(Coordinaat coor) {
-        return speelBooordt[coor.x][coor.y];
+        if (coor.x >= 0 && coor.y >= 0 && coor.x < 7 && coor.y < 7)
+            return speelBooordt[coor.x][coor.y];
+        else
+            return -1;
     }
 
     /**
-     * update de waarde van een specifiek vakje
+     * update de waarde van een specifiek vakje mits de coordinatie erbinnen vallen
      * @param coor de x and y coordinaat van het vakje
      * @param waarde de waarde die in het vakje moet komen te staan
      */
     public void setWaarde(Coordinaat coor, int waarde) {
-        speelBooordt[coor.x][coor.y] = waarde;
+        if (coor.x >= 0 && coor.y >= 0 && coor.x < 7 && coor.y < 7)
+            speelBooordt[coor.x][coor.y] = waarde;
     }
 
     /**
-     * Kijkt of de waarde die hij meekrijg overeen komt met de waarde op een specifiek vakje
+     * Kijkt of de waarde die hij meekrijg overeen komt met de waarde op een specifiek vakje. Als de coordinaten er buiten vallen is het altijd false
      * @param coor de x en y coordinaat van het vakje
      * @param waarde de waarde waarmee hij het moet vergelijken
-     * @return retourneert de waar of niet waar als de waarde overeenkomt met de waarde van het vakje
+     * @return retourneert de waar of niet waar als de waarde overeenkomt met de waarde van het vakje. Als de coordinaten te groot zijn is het altijd false
      */
     public boolean checkWaarde(Coordinaat coor, int waarde) {
-        return speelBooordt[coor.x][coor.y] == waarde;
+        if (coor.x >= 0 && coor.y >= 0 && coor.x < 7 && coor.y < 7)
+            return speelBooordt[coor.x][coor.y] == waarde;
+        else
+            return false;
     }
 }

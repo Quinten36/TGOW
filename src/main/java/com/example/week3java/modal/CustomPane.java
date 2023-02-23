@@ -1,7 +1,6 @@
 package com.example.week3java.modal;
 
 import com.example.week3java.controller.GameController;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -39,7 +38,7 @@ public class CustomPane extends Pane implements VeldUpdater {
      * Bepaal de kleur en geef die terug
      * @return geeft de kleur terug van de speler
      */
-    private Color bepaalKleur() {
+    public Color bepaalKleur() {
         Color kleur = Color.WHITE;// zet de kleur op wit voor een leeg vult
         if (this.waarde == (int) GameLogica.maximaleSpelers[0])
             kleur = Color.LIGHTGREEN; // et de kleur op groen als het de waarde 102 (B) heeft
@@ -55,7 +54,7 @@ public class CustomPane extends Pane implements VeldUpdater {
     /**
      * Update de tekst in een vakje
      */
-    private void updateDeTekst() {
+    public void updateDeTekst() {
         this.waarde = GameController.gameRules.speelBord.getWaarde(coor);
         this.waardeText.setText(this.waarde == 0 ? "" : ""+(char) this.waarde);
     }
@@ -84,8 +83,8 @@ public class CustomPane extends Pane implements VeldUpdater {
         if (pane.geselecteerd) {
             kleurAchtergrond.setFill(Color.LIGHTGREY);
         } else {
-            updateDeKleur();
             updateDeTekst();
+            updateDeKleur();
         }
     }
 }
