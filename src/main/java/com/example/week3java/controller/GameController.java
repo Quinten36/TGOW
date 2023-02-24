@@ -34,7 +34,8 @@ public class GameController implements Initializable, BordOberserver {
         gridPane.setVgap(-12);
 
         //FIXME: Hier kan je aangeven wie ai is. Default is H ai en b speler
-        int[] r = {'B','H'};
+//        int[] r = {'B','H'};
+        int[] r = {'H'};
         gameRules = new GameLogica(r);
         gameRules.setOriginVelden(2);
 

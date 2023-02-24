@@ -177,6 +177,9 @@ public class GameLogica {
         }
     }
 
+    /**
+     * Als het spel over is dan weergeef wie heeft gewonnen
+     */
     private void spelIsOver() {
         if (gameIsGaande)
             gameIsGaande = false;
@@ -204,6 +207,10 @@ public class GameLogica {
         gaEenSpelerTerug();
     }
 
+    /**
+     * Bedenk en doe de move die de AI kan doen
+     * @throws Exception Als hij wonky doet
+     */
     private void doeDeAIMove() throws Exception {
         //krijg al jouw vakjes
         ArrayList<Coordinaat> alleVakjesVanJou = getAlJouwVakjes(spelersInSpel[spelerAanZet]);//KLOPT
@@ -224,12 +231,17 @@ public class GameLogica {
         }
     }
 
+    /**
+     * Bereken de beste moves die een AI kan doen, met bij elke move de score
+     * @param allMogelijkeZetten alle mogelijke zetten die de AI kan doen
+     * @return een array met alle beste moves met score
+     */
     private ArrayList<ResultForm> berekenBesteMove(ArrayList<ResultForm> allMogelijkeZetten) {
         int besteScore = 0;
         ArrayList<ResultForm> besteMoves = new ArrayList<>();
 
         for (ResultForm coordsSet : allMogelijkeZetten) {
-            int score = berekenScoreMove(coordsSet.beginPunt, coordsSet.eindPunt, allMogelijkeZetten);
+            int score = berekenScoreMove(coordsSet.beginPunt, coordsSet.eindPunt);
             if (score == besteScore) {
                 coordsSet.score = score;
                 besteMoves.add(coordsSet);
@@ -251,7 +263,13 @@ public class GameLogica {
         return output;
     }
 
-    private int berekenScoreMove(Coordinaat o, Coordinaat o1, ArrayList<ResultForm> allMogelijkeZetten) {
+    /**
+     * bereken de totaal score van een bepaalde move. inclusief plus en min punten
+     * @param o startPositie
+     * @param o1 eindPositie
+     * @return geeft de totale score terug
+     */
+    private int berekenScoreMove(Coordinaat o, Coordinaat o1) {
         int score = 0;
         if (hulp.magDeDuplicatieVoorkomen(o, o1))
             score++;
@@ -264,6 +282,11 @@ public class GameLogica {
         return score;
     }
 
+    /**
+     * Zorgt dat alles wordt gedaan om de minpunten te berekenen
+     * @param moveToCheck de moves die hij moet checken
+     * @return het aantal minpunten
+     */
     private int calculateMinusPoints(Coordinaat moveToCheck) {
         int tegenstander = spelerAanZet;
         tegenstander++;
@@ -279,6 +302,12 @@ public class GameLogica {
         return score;
     }
 
+    /**
+     * berekent een score op basis van op hoeveel manieren de tegenstander het vakje wat je wilt innemen weer terug kan innemen
+     * @param tegenstandersMoves alle moves die de tegenstander kan doen
+     * @param moveToCheck de move die je wilt doen en wilt checken
+     * @return de score van op hoeveel manieren de tegenstander het vakje kan terug innemen
+     */
     private int CheckMatchingPlaces(ArrayList<ResultForm> tegenstandersMoves, Coordinaat moveToCheck) {
         int score = 0;
 
@@ -291,6 +320,11 @@ public class GameLogica {
         return score;
     }
 
+    /**
+     * verkrijg alle vakjes van een bepaalde speler
+     * @param spelerTeCheck de speler waarvan hij de vakjes moet krijgen
+     * @return een lijst met alle vakjes van een speler
+     */
     private ArrayList<Coordinaat> getAlJouwVakjes(int spelerTeCheck) {
         ArrayList<Coordinaat> alleVakjesVanJou = new ArrayList<>();
         int[][] copy = speelBord.getSpeelBooordt();
@@ -301,6 +335,11 @@ public class GameLogica {
         return alleVakjesVanJou;
     }
 
+    /**
+     * verkrijg alle alle zetten die de je kan doen op basis van de lijst van de vakjes van jou
+     * @param alleVakjesVanJou de lijst met vakjes van jouw
+     * @return een lijst met alle mogelijke zetten (From, to) format
+     */
     private ArrayList<ResultForm> getAlleZetten(ArrayList<Coordinaat> alleVakjesVanJou) {
         ArrayList<ResultForm> allMogelijkeZetten = new ArrayList<>();
         for (Coordinaat c : alleVakjesVanJou) {
