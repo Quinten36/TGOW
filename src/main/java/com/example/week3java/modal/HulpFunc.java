@@ -12,89 +12,173 @@ public class HulpFunc {
         this.rules = rules;
     }
 
-    public boolean magDeDuplicatieVoorkomen(int xNu, int yNu, int xMove, int yMove){
+    /**
+     * Doet alle checks of de speler mag dupliceren naar het gewenste vakje
+     * @param origin de coordinaten van waar hij de zet wilt beginnen
+     * @param bestemming de coordinaten van waar hij de zet wilt eindigen
+     * @return geeft true/false weer als hij de zet mag doen of niet
+     */
+    public boolean magDeDuplicatieVoorkomen(Coordinaat origin, Coordinaat bestemming){
         return
-            !isLeeg(xNu, yNu)
+            !isLeeg(origin)
             &&
-            isLeeg(xMove,yMove)
+            isLeeg(bestemming)
             &&
-            isSchuin(xNu,yNu,xMove,yMove);
+            isSchuin(origin,bestemming);
     }
 
-    private boolean isLeeg(int x, int y) {
+    /**
+     * checkt of hij geselecteerde vakje leeg is
+     * @param coor de coordinaten van het vakje wat hij moet controleren
+     * @return true of false of hij wel of niet leeg is
+     */
+    private boolean isLeeg(Coordinaat coor) {
         try {
             int[][] veld = rules.speelBord.getSpeelBooordt();
-            return veld[x][y]==0;
+            return veld[coor.x][coor.y]==0;
         } catch (Exception e) {
             return false;
         }
     }
 
-    //check aanliggend (ook schuin)
-    private boolean isSchuin(int x1, int y1, int x2, int y2){
-        int dx = Math.abs(x2 - x1);
-        int dy = Math.abs(y2 - y1);
-        //TODO: optimze de code
-        return (dx == 1 && dy == 0) || (dx == 0 && dy == 1) || (dx == 1 && dy == 1);
+    /**
+     * hij kijkt of hij naar een vakje mag verplaatsen die aanliggend is
+     * @param origin de coordianten van de origin vakje
+     * @param bestemming de coordinaten van het bestemmings vakje
+     * @return hij geeft terug of hij de zet mag doen
+     */
+    private boolean isSchuin(Coordinaat origin, Coordinaat bestemming){
+        int dx = Math.abs(bestemming.x - origin.x);
+        int dy = Math.abs(bestemming.y - origin.y);
+        return dx + dy >= 1;
+//        return (dx == 1 && dy == 0) || (dx == 0 && dy == 1) || (dx == 1 && dy == 1);
     }
 
-    public boolean magDeVerplaatsingVoorkomen(int xNu, int yNu, int xMove, int yMove){
+    /**
+     * Doet alle checks of de speler mag verplaatsen naar het gewenste vakje
+     * @param origin de coordinaten van waar hij de zet wilt beginnen
+     * @param bestemming de coordinaten van waar hij de zet wilt eindigen
+     * @return geeft true/false weer als hij de zet mag doen of niet
+     */
+    public boolean magDeVerplaatsingVoorkomen(Coordinaat origin, Coordinaat bestemming){
         return
-            !isLeeg(xNu, yNu)
+            !isLeeg(origin)
                 &&
-                isLeeg(xMove,yMove)
+                isLeeg(bestemming)
                 &&
-                isOp2BlokkenAfstand(xNu,yNu,xMove,yMove);
+                isOp2BlokkenAfstand(origin,bestemming);
     }
 
-    private boolean isOp2BlokkenAfstand(int x1, int y1, int x2, int y2){
+    /**
+     * kijk of het blokje op 2 blokken afstand is
+     * @param origin de coordinaten van de origin vakje
+     * @param bestemming de coordianten van het bestemmings vakje
+     * @return een true/false of de zet valid is
+     */
+    private boolean isOp2BlokkenAfstand(Coordinaat origin, Coordinaat bestemming){
         // Bereken het verschil tussen de 2 coordinaten
-        int xDiff = Math.abs(x1 - x2);
-        int yDiff = Math.abs(y1 - y2);
+        int xDiff = Math.abs(origin.x -  bestemming.x);
+        int yDiff = Math.abs(origin.y - bestemming.y);
 
-        // check of het verschil wel echt 2 is. en niet stiekem 1.
-        if (xDiff == 2 && yDiff == 0 || xDiff == 2 && yDiff == 2|| xDiff == 1 && yDiff == 2|| xDiff == 2 && yDiff == 1) {
-            return true;
-        } else if (xDiff == 0 && yDiff == 2) {
-            return true;
-        } else {
-            return false;
-        }
+        return (xDiff + yDiff) >= 2 && (xDiff != 1 && yDiff != 1);
+//        if (xDiff == 2 && yDiff == 0 || xDiff == 2 && yDiff == 2|| xDiff == 1 && yDiff == 2|| xDiff == 2 && yDiff == 1) {
+//            return true;
+//        } else if (xDiff == 0 && yDiff == 2) {
+//            return true;
+//        } else {
+//            return false;
+//        }
     }
 
+    /**
+     * checkt of een speler die hij meektijg nog een zet kan doen in het veld
+     * @param spelerOmTeChecken de speler waarvan hij het moet checken
+     * @return true als hij spel over is, false als er nog een zet is
+     */
     public boolean kijkenOfHetSpelOverIs(int spelerOmTeChecken) {
         ArrayList<Coordinaat> alleVakjeVanSpeler = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 7; j++) {
+        for (int i = 0; i < GameController.gameRules.GROOTTE; i++) {
+            for (int j = 0; j < GameController.gameRules.GROOTTE; j++) {
                 if (GameController.gameRules.speelBord.getWaarde(new Coordinaat(i,j)) == spelerOmTeChecken)
                     alleVakjeVanSpeler.add(new Coordinaat(i,j));
             }
         }
         for (Coordinaat c : alleVakjeVanSpeler) {
             //verdubbelen N,E,Z,W FIXED
-            if (magDeDuplicatieVoorkomen(c.x, c.y, c.x, c.y-1)||magDeDuplicatieVoorkomen(c.x, c.y, c.x+1, c.y)||
-                    magDeDuplicatieVoorkomen(c.x, c.y, c.x, c.y+1)||magDeDuplicatieVoorkomen(c.x, c.y, c.x-1, c.y))
+            if (verdubbelNESW(c)) {
                 return false;
+            }
             //verdubbel NE,ZE,ZW,NW FIXED
-            if (magDeDuplicatieVoorkomen(c.x, c.y, c.x+1, c.y-1)||magDeDuplicatieVoorkomen(c.x, c.y, c.x+1, c.y+1)||
-                    magDeDuplicatieVoorkomen(c.x, c.y, c.x-1, c.y+1)||magDeDuplicatieVoorkomen(c.x, c.y, c.x-1, c.y-1))
+            if (verdubbelNEZEZWNW(c)) {
                 return false;
+            }
             //springen N,E,Z,W FIXED
-            if (magDeVerplaatsingVoorkomen(c.x, c.y, c.x, c.y-2)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x+2, c.y)||
-                    magDeVerplaatsingVoorkomen(c.x, c.y, c.x, c.y+2)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x-2, c.y))
+            if (springenNESW(c)) {
                 return false;
+            }
             //springen NE,ZE,ZW,NW FIXED
-            if (magDeVerplaatsingVoorkomen(c.x, c.y, c.x+2, c.y-2)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x+2, c.y+2)||
-                    magDeVerplaatsingVoorkomen(c.x, c.y, c.x-2, c.y-2)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x-2, c.y-2))
+            if (springenNESESWNW(c)) {
                 return false;
+            }
             //springen NNE,ENE,EZE,ZZE,ZZW,WZW,WNW,NNW
-            if (magDeVerplaatsingVoorkomen(c.x, c.y, c.x+1, c.y-2)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x+2, c.y-1)||
-                    magDeVerplaatsingVoorkomen(c.x, c.y, c.x+2, c.y+1)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x+1, c.y+2)||
-                    magDeVerplaatsingVoorkomen(c.x, c.y, c.x-1, c.y+2)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x-2, c.y+1)||
-                    magDeVerplaatsingVoorkomen(c.x, c.y, c.x-2, c.y-1)||magDeVerplaatsingVoorkomen(c.x, c.y, c.x-1, c.y-2))
+            if (springenAlsPaard(c)) {
                 return false;
+            }
         }
+        System.out.println("het is true");
         return true;
+    }
+
+    /**
+     * checkt of er nog een move als hij horizontaal of verticaal verdubbeld
+     * @param c coordinaat van waar hij begint
+     * @return true/false of er een zet mogelijk is
+     */
+    public boolean verdubbelNEZEZWNW(Coordinaat c) {
+        return magDeDuplicatieVoorkomen(c, c.voegToeXY(1,-1))||magDeDuplicatieVoorkomen(c, c.voegToeXY(1,1))||
+                magDeDuplicatieVoorkomen(c, c.voegToeXY(-1,1))||magDeDuplicatieVoorkomen(c, c.voegToeXY(-1,-1));
+    }
+
+    /**
+     * checkt of er nog een move als hij diagonaal verdubbeld
+     * @param c coordinaat van waar hij begint
+     * @return true/false of er een zet mogelijk is
+     */
+    public boolean verdubbelNESW(Coordinaat c) {
+        return magDeDuplicatieVoorkomen(c, c.voegToeY(-1)) || magDeDuplicatieVoorkomen(c, c.voegToeX(1)) ||
+                magDeDuplicatieVoorkomen(c, c.voegToeY(1)) || magDeDuplicatieVoorkomen(c, c.voegToeX(-1));
+    }
+
+    /**
+     * checkt of er nog een move als hij horizontaal of verticaal springt
+     * @param c coordinaat van waar hij begint
+     * @return true/false of er een zet mogelijk is
+     */
+    public boolean springenNESW(Coordinaat c) {
+        return magDeVerplaatsingVoorkomen(c, c.voegToeY(-2))||magDeVerplaatsingVoorkomen(c, c.voegToeX(2))||
+                magDeVerplaatsingVoorkomen(c, c.voegToeY(2))||magDeVerplaatsingVoorkomen(c, c.voegToeX(-2));
+    }
+
+    /**
+     * checkt of er nog een move als hij springt diagonaal
+     * @param c coordinaat van waar hij begint
+     * @return true/false of er een zet mogelijk is
+     */
+    public boolean springenNESESWNW(Coordinaat c) {
+        return magDeVerplaatsingVoorkomen(c, c.voegToeXY(2,-2))||magDeVerplaatsingVoorkomen(c, c.voegToeXY(2,2))||
+                magDeVerplaatsingVoorkomen(c, c.voegToeXY(-2, 2))||magDeVerplaatsingVoorkomen(c, c.voegToeXY(-2,-2));
+    }
+
+    /**
+     * checkt of er nog een move als hij springt als een paard
+     * @param c coordinaat van waar hij begint
+     * @return true/false of er een zet mogelijk is
+     */
+    public boolean springenAlsPaard(Coordinaat c) {
+        return magDeVerplaatsingVoorkomen(c, c.voegToeXY(1,-2))||magDeVerplaatsingVoorkomen(c, c.voegToeXY(2,-1))||
+                magDeVerplaatsingVoorkomen(c, c.voegToeXY(2,1))||magDeVerplaatsingVoorkomen(c, c.voegToeXY(1,2))||
+                magDeVerplaatsingVoorkomen(c, c.voegToeXY(-1,2))||magDeVerplaatsingVoorkomen(c, c.voegToeXY(-2,1))||
+                magDeVerplaatsingVoorkomen(c, c.voegToeXY(-2,-1))||magDeVerplaatsingVoorkomen(c, c.voegToeXY(-1,-2));
     }
 
     /**
@@ -108,5 +192,31 @@ public class HulpFunc {
             clone[i] = Arrays.copyOf(original[i], original[i].length);
         }
         return clone;
+    }
+
+    public ArrayList<Coordinaat> vindDeMovesDubNESW(Coordinaat c) {
+        ArrayList<Coordinaat> out = new ArrayList<>();
+        if (magDeDuplicatieVoorkomen(c, c.voegToeY(-1)))
+            out.add(c.voegToeY(-1));
+        if (magDeDuplicatieVoorkomen(c, c.voegToeX(1)))
+            out.add(c.voegToeX(1));
+        if (magDeDuplicatieVoorkomen(c, c.voegToeY(1)))
+            out.add(c.voegToeY(1));
+        if (magDeDuplicatieVoorkomen(c, c.voegToeX(-1)))
+            out.add(c.voegToeX(-1));
+        return out;
+    }
+
+    public int kijkHoeveelGeinfecteerdKunnenWorden(Coordinaat coor, int spelerDieErZouStaan) {
+        int hoeveel = 0;
+        for (int xj = -1; xj <= 1; xj++) {
+            for(int yi = -1; yi<=1;yi++){
+                int waarde = GameController.gameRules.speelBord.getWaarde(new Coordinaat(coor.x+xj, coor.y+yi));
+                if (waarde == -1) continue;
+                if (waarde != 0 && waarde != spelerDieErZouStaan)
+                    hoeveel++;
+            }
+        }
+        return hoeveel;
     }
 }

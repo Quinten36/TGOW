@@ -1,15 +1,18 @@
 package com.example.week3java.modal;
 
 public class Booord {
-    private int[][] speelBooordt = new int[7][7]; // maak een speelboard van 7 bij 7
+    private int[][] speelBooordt; // maak een speelboard van 7 bij 7
+    private int GROOTTE;
 
     /**
      * Maak een leeg bord aan
      */
-    public Booord() {
+    public Booord(int size) {
+        speelBooordt = new int[size][size];
+        this.GROOTTE = size;
         // vul het speelboord met lege data
-        for (int i = 0; i < 7; i++)
-            for (int j = 0; j < 7; j++)
+        for (int i = 0; i < size; i++)
+            for (int j = 0; j < size; j++)
                 speelBooordt[i][j] = 0;
     }
 
@@ -28,7 +31,7 @@ public class Booord {
      * @return de waarde die het vakje heeft. -1 als de coordinaten niet kloppen
      */
     public int getWaarde(Coordinaat coor) {
-        if (coor.x >= 0 && coor.y >= 0 && coor.x < 7 && coor.y < 7)
+        if (coor.x >= 0 && coor.y >= 0 && coor.x < GROOTTE && coor.y < GROOTTE)
             return speelBooordt[coor.x][coor.y];
         else
             return -1;
@@ -40,7 +43,7 @@ public class Booord {
      * @param waarde de waarde die in het vakje moet komen te staan
      */
     public void setWaarde(Coordinaat coor, int waarde) {
-        if (coor.x >= 0 && coor.y >= 0 && coor.x < 7 && coor.y < 7)
+        if (coor.x >= 0 && coor.y >= 0 && coor.x < GROOTTE && coor.y < GROOTTE)
             speelBooordt[coor.x][coor.y] = waarde;
     }
 
@@ -51,7 +54,7 @@ public class Booord {
      * @return retourneert de waar of niet waar als de waarde overeenkomt met de waarde van het vakje. Als de coordinaten te groot zijn is het altijd false
      */
     public boolean checkWaarde(Coordinaat coor, int waarde) {
-        if (coor.x >= 0 && coor.y >= 0 && coor.x < 7 && coor.y < 7)
+        if (coor.x >= 0 && coor.y >= 0 && coor.x < GROOTTE && coor.y < GROOTTE)
             return speelBooordt[coor.x][coor.y] == waarde;
         else
             return false;

@@ -9,6 +9,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -32,13 +33,15 @@ public class GameController implements Initializable, BordOberserver {
         gridPane.setHgap(2);
         gridPane.setVgap(-12);
 
-        gameRules = new GameLogica();
+        //FIXME: Hier kan je aangeven wie ai is. Default is H ai en b speler
+        int[] r = {'B','H'};
+        gameRules = new GameLogica(r);
         gameRules.setOriginVelden(2);
 
         int[][] copyBoard = gameRules.getSpeelbord();
         // Maak een grid
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 7; j++) {
+        for (int i = 0; i < gameRules.GROOTTE; i++) {
+            for (int j = 0; j < gameRules.GROOTTE; j++) {
                 // maak custom blokjes op basis van de waarde
                 final Coordinaat c = new Coordinaat(j,i);
                 CustomPane vakje = maakVakje(copyBoard[j][i], c);
@@ -63,7 +66,11 @@ public class GameController implements Initializable, BordOberserver {
         gamePane.getChildren().add(gridPane);
         gameBord = (GridPane) gamePane.getChildren().get(0);
 
-        gameRules.spelStart(feedback);
+        try {
+            gameRules.spelStart(feedback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -78,13 +85,18 @@ public class GameController implements Initializable, BordOberserver {
             gameRules.serviesKast.pakBovensteDing(); //pakt huidige stand
             gameRules.serviesKast.pakBovensteDing(); //pakt de stand zoals hij bij de tegenstand stond
             int[][] oud3 = (int[][]) gameRules.serviesKast.krijgWaardeBovenste(); //pakt de stand hoe hij stond toen je aan de beurt was
-            for (int i = 0; i< 7;i++)
-                for (int j = 0; j < 7;j++)
+            for (int i = 0; i< gameRules.GROOTTE;i++)
+                for (int j = 0; j < gameRules.GROOTTE;j++)
                     gameRules.speelBord.setWaarde(new Coordinaat(j,i), oud3[j][i]);
 
             gameRules.gameIsGaande = true;
 
             gameRules.updateAlleVelden();
         }
+    }
+
+    @FXML
+    void goResetThingsTheEasyWay(ActionEvent event) throws IOException {
+        SceneController.switchTo("game", "Game screen");
     }
 }

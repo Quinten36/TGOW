@@ -8,4 +8,16 @@ public class Coordinaat {
         this.x = x;
         this.y = y;
     }
+
+    public Coordinaat voegToeX(int c) {
+        return new Coordinaat(this.x+c, this.y);
+    }
+
+    public Coordinaat voegToeY(int c) {
+        return new Coordinaat(this.x, this.y+c);
+    }
+
+    public Coordinaat voegToeXY(int x, int y) {
+        return new Coordinaat(this.x+x, this.y+y);
+    }
 }
